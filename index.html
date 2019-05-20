@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+  <title>Patient Decision Aids</title>
+
+  <link rel='stylesheet' type='text/css' href='./src/css/example-smart-app.css'>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+  <!--
+      Temporarily disable cerner-smart-embeddable-lib
+      <link rel='stylesheet' type='text/css' href='./lib/css/cerner-smart-embeddable-lib-1.0.0.min.css'>
+ -->
+
+</head>
+
+<body>
+
+  <div id='errors'>
+  </div>
+
+  <div id="loading" class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
+
+  <div id='holder'>
+
+    <div class="container-fluid">
+      <div class="row content">
+
+        <div class="col-sm-3 sidenav">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3>Patient Information</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <th>MRN:</th>
+                  <td id='mrn'></td>
+                </tr>
+                <tr>
+                  <th>Name:</th>
+                  <td id='fname'></td>
+                </tr>
+                <tr>
+                  <th>Gender:</th>
+                  <td id='gender'></td>
+                </tr>
+                <tr>
+                  <th>Date of Birth:</th>
+                  <td id='birthdate'></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3>Conditions <span class="badge">3 active</span></h3>
+            </div>
+            <div class="panel-body">
+              <table class="tabler">
+                <tr>
+                  <td id='conditions'></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3>Care Plans <span class="badge">1 active</span></h3>
+            </div>
+            <div class="panel-body">
+              <table class="table">
+                <tr>
+                  <td id='careplan'></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-sm-7 text-left" id="tools">
+
+        </div>
+
+        <div class="col-sm-2 sidenav">
+          <div class="alert alert-info">
+            <h4>Other Decision Aid Tools:</h4>
+            <li>Asthma</li>
+            <li>Colon Cancer Screening</li>
+            <li>Depression</li>
+            <li>Food Allergy</li>
+            <li>Hospice</li>
+            <li>Pain Management</li>
+            <li>Replacement of ICD</li>
+            <li>Tobacco Cessaton</li>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </div> <!-- HOLDER -->
+
+  <!-- Required JS files to enable this page to embed within an MPage -->
+  <!--
+      Temporarily disable cerner-smart-embeddable-lib
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
+      <script src='./lib/js/cerner-smart-embeddable-lib-1.0.0.min.js'></script>
+    -->
+
+  <!-- Application-level javascript-->
+  <script src='./src/js/example-smart-app.js'></script>
+
+  <!-- FHIR Client JS Library -->
+  <script src='./lib/js/fhir-client-v0.1.12.js'></script>
+
+  <!-- Prevent session bleed caused by single threaded embedded browser and sessionStorage API -->
+  <!-- https://github.com/cerner/fhir-client-cerner-additions -->
+  <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>
+    extractData().then(
+      //Display Patient Demographics and Observations if extractData was success
+      function (p) {
+        drawVisualization(p);
+      },
+
+      //Display 'Failed to call FHIR Service' if extractData failed
+      function () {
+        $('#loading').hide();
+        $('#errors').html('<p> Failed to call FHIR Service </p>');
+      }
+    );
+  </script>
+</body>
+
+</html>
