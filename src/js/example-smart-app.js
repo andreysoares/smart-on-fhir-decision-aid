@@ -231,7 +231,7 @@ function ICDVideo() {
   `
   <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/284768867" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
   <p><a href="https://vimeo.com/284768867">ICD V9</a> from <a href="https://vimeo.com/user83966291">Patient Decision Aids</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
-  <button type="button" class="btn btn-primary" onClick="ICDTool()">Done</button>
+  <button type="button" class="btn btn-primary" onClick="ICDTool()">Back</button>
   `);
 }
 
@@ -239,7 +239,7 @@ function ICDBooklet() {
   $('#tools').html(
   `
   <embed src="https://patientdecisionaid.org/wp-content/uploads/2016/06/ICDInfographic-4.8.19.pdf" type="application/pdf" style="width:100%; height:700px;"/>
-  <button type="button" class="btn btn-primary" onClick="ICDTool()">Done</button>
+  <button type="button" class="btn btn-primary" onClick="ICDTool()">Back</button>
   `);
 }
 
@@ -392,9 +392,68 @@ function ICDTool() {
 
 <button type="button" class="btn btn-primary" onClick="ICDBooklet()">Booklet</button>
 <button type="button" class="btn btn-primary" onClick="ICDVideo()">Video</button>
-  <button type="button" class="btn btn-primary" onClick="decisionAids()">Done</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Done</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">Feedback</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      <label>I read the entire decision aid.</label>
+      <div class="btn-group btn-toggle"> 
+
+      <button class="btn btn-sm btn-default">Yes</button>
+      <button class="btn btn-sm btn-primary active">No</button>
+    </div>
+
+    <div>&nbsp;</div>
+
+<div class="form-group">
+  <label for="comment">Did this information help you feel more comfortable in making a decision about whether to get an ICD?</label>
+  <textarea class="form-control" rows="5" id="comment"></textarea>
+</div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="decisionAids()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('.btn-toggle').click(function() {
+  $(this).find('.btn').toggleClass('active');  
+  
+  if ($(this).find('.btn-primary').size()>0) {
+    $(this).find('.btn').toggleClass('btn-primary');
+  }
+  if ($(this).find('.btn-danger').size()>0) {
+    $(this).find('.btn').toggleClass('btn-danger');
+  }
+  if ($(this).find('.btn-success').size()>0) {
+    $(this).find('.btn').toggleClass('btn-success');
+  }
+  if ($(this).find('.btn-info').size()>0) {
+    $(this).find('.btn').toggleClass('btn-info');
+  }
+  
+  $(this).find('.btn').toggleClass('btn-default');
+     
+});
+</script>
   `);
 }
+
+
 
 function decisionAids() {
   $('#tools').html(
