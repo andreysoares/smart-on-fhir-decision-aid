@@ -238,7 +238,7 @@ function ICDVideo() {
 function ICDBooklet() {
   $('#tools').html(
   `
-  <iframe src="http://docs.google.com/gview?url=https://patientdecisionaid.org/wp-content/uploads/2016/06/ICDInfographic-4.8.19.pdf&embedded=true" style="width:100%; height:700px;" frameborder="0"></iframe>
+  <embed src="https://patientdecisionaid.org/wp-content/uploads/2016/06/ICDInfographic-4.8.19.pdf" type="application/pdf" style="width:100%; height:700px;"/>
   <button type="button" class="btn btn-primary" onClick="ICDTool()">Done</button>
   `);
 }
