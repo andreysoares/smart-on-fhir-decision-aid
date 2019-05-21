@@ -53,8 +53,14 @@
 
           var p = defaultPatient();
           p.mrn = mrn;
-          dob = new Date(patient.birthDate)
-          p.birthdate = dob.toLocaleDateString() + " (" + getAge(dob) + " years old)";
+          dob = new Date(patient.birthDate);
+          p.birthdate = dob.toLocaleDateString();
+          if(patient.hasOwnProperty('deceasedDateTime')) {
+            p.deceaseddate = new Date(patient.deceasedDateTime);
+            p.birthdate = p.birthdate + ' (deceased)';
+          } else {
+            p.deceaseddate = null;
+          }
           p.gender = gender.charAt(0).toUpperCase() + gender.slice(1);
           p.fname = fname + " " + lname;
           p.lname = lname;
@@ -87,6 +93,7 @@
       lname: { value: '' },
       gender: { value: '' },
       birthdate: { value: '' },
+      deceaseddate: { value: '' },
       height: { value: '' },
       condi: { value: '' },
       carep: { value: '' }
@@ -97,10 +104,10 @@
     var today = new Date();
     var birthDate = new Date(dateString);
     var age = today.getFullYear() - birthDate.getFullYear();
-    // var m = today.getMonth() - birthDate.getMonth();
-    // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    //   age--;
-    // }
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
     return age;
   }
 
@@ -151,9 +158,11 @@
     // CarePlans.data.entry[0].resource.period.start
     // CarePlans.data.entry[0].resource.status
     // console.log(CarePlans.data.entry[0].resource);
+    if(CarePlans.data.hasOwnProperty('entry')){
     CarePlans.data.entry.forEach(function (entries) {
       var category = entries.resource.category[0].coding[0].display;
       var startPeriod = new Date(entries.resource.period.start);
+      var endPeriod = new Date(entries.resource.period.end);
       var status = entries.resource.status;
 
       var formattedActivities = [];
@@ -166,12 +175,12 @@
 
       });
 
-      if (category && status != 'completed') {
-        formattedCarePlans.push([category, startPeriod, status, formattedActivities.join('|')]);
+      if (category) {
+        formattedCarePlans.push([category, startPeriod, endPeriod, status, formattedActivities.join('|')]);
       }
 
     });
-
+  }
     formattedCarePlans.sort(function (a, b) {
       return b[1] - a[1]
     });
@@ -201,7 +210,10 @@
     $('#height').html(p.height);
     $('#conditions').html(formatConditions(p.condi));
     $('#careplan').html(formatCarePlans(p.carep));
-    $('#tools').html(decisionAids());
+    $('#tools').html(decisionAids(p.deceaseddate));
+    $('#sidebar').html(otherTools(p.deceaseddate));
+    $('#activeconditions').html(p.condi.length);
+    $('#activecareplans').html(p.carep.length);
   };
 
 })(window);
@@ -220,7 +232,11 @@ function formatCarePlans(CarePlans) {
   var formatTable = '<table class="table">' + '<tr><th>Category</th><th>Period</th><th>Activity</th></tr>';
   for (var i = 0; i < CarePlans.length; i++) {
     var CarePlan = CarePlans[i];
-    formatTable = formatTable + '<tr><td>' + CarePlan[0] + '</td><td>' + CarePlan[1].toLocaleDateString() + '</td><td>' + CarePlan[3].split('|').join(', ') + '</td></tr>';
+    var period = 'From ' + CarePlan[1].toLocaleDateString();
+    if(CarePlan[2] != 'Invalid Date') {
+      period = period + ' to ' + CarePlan[2].toLocaleDateString();
+    }
+    formatTable = formatTable + '<tr><td>' + CarePlan[0] + '</td><td>' + period + '</td><td>' + CarePlan[4].split('|').join(',<br>') + '</td></tr>';
   }
   formatTable = formatTable + '</table>';
   return formatTable;
@@ -229,15 +245,18 @@ function formatCarePlans(CarePlans) {
 function ICDVideo() {
   $('#tools').html(
   `
+  <div >&nbsp;</div>
   <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/284768867" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
   <p><a href="https://vimeo.com/284768867">ICD V9</a> from <a href="https://vimeo.com/user83966291">Patient Decision Aids</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
   <button type="button" class="btn btn-primary" onClick="ICDTool()">Back</button>
+  </div>
   `);
 }
 
 function ICDBooklet() {
   $('#tools').html(
   `
+  <div >&nbsp;</div>
   <embed src="https://patientdecisionaid.org/wp-content/uploads/2016/06/ICDInfographic-4.8.19.pdf" type="application/pdf" style="width:100%; height:700px;"/>
   <button type="button" class="btn btn-primary" onClick="ICDTool()">Back</button>
   `);
@@ -393,6 +412,7 @@ function ICDTool() {
 <button type="button" class="btn btn-primary" onClick="ICDBooklet()">Booklet</button>
 <button type="button" class="btn btn-primary" onClick="ICDVideo()">Video</button>
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Done</button>
+<div>&nbsp;</div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -454,10 +474,9 @@ $('.btn-toggle').click(function() {
 }
 
 
-
-function decisionAids() {
-  $('#tools').html(
-    `<div class="page-header">
+function decisionAids(deceased) {
+  if(!deceased) {
+  return `<div class="page-header">
     <h1>Patient Decision Aids</h1>
     <h4>Decision aids provide information about treatment options for patients to think about and to discuss with their health care providers.</h4>
     </div>
@@ -516,5 +535,26 @@ function decisionAids() {
       </div>
     </div>
     </div><br>
-    `);
+    `;
+  } else {
+    return `<div>&nbsp;</div>
+      <div class="alert alert-warning"><h3>Patient is deceased!</h3></div>`; 
+  }
+}
+
+function otherTools(deceased) {
+  if(!deceased) {
+    return `
+  <div class="alert alert-info">
+  <h4>Other Decision Aid Tools:</h4>
+  <li>Asthma</li>
+  <li>Colon Cancer Screening</li>
+  <li>Depression</li>
+  <li>Food Allergy</li>
+  <li>Hospice</li>
+  <li>Pain Management</li>
+  <li>Replacement of ICD</li>
+  <li>Tobacco Cessaton</li>
+</div>`;
+}
 }
