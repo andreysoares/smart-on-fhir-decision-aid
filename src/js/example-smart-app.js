@@ -557,8 +557,10 @@ Problems do occur:
         <span class="fa fa-star-o" data-rating="3"></span>
         <span class="fa fa-star-o" data-rating="4"></span>
         <span class="fa fa-star-o" data-rating="5"></span>
-        <input type="hidden" name="whatever1" class="rating-value" value="0">
+        <input type="hidden" name="whatever1" class="rating-value" value="0">        
+        <a class="btn btn-link btn-sm" onClick="clear_star()">clear</a>
       </div>
+      
 
     </div>
     
@@ -609,6 +611,11 @@ $star_rating.on('click', function() {
   $star_rating.siblings('input.rating-value').val($(this).data('rating'));
   return SetRatingStar();
 });
+
+function clear_star(){
+  $star_rating.siblings('input.rating-value').val(0);
+  return SetRatingStar();
+}
 
 SetRatingStar();
 $(document).ready(function() {
