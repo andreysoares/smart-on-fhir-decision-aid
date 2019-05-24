@@ -3,6 +3,15 @@ th, td {
   text-align: left;
 }
 
+.panel-heading > h3 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.panel-body > table {
+  margin-bottom: 0px;
+}
+
 body {
   margin: 0;
 }
@@ -52,6 +61,13 @@ body {
     transform: scale(1.0);
   }
 }
+
+.star-rating {
+  line-height:32px;
+  font-size:1.25em;
+}
+
+.star-rating .fa-star{color: orange;}
 
 .btn-primary {
   color: #fff;

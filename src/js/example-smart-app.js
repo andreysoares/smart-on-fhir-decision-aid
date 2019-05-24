@@ -524,6 +524,7 @@ Problems do occur:
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
 <div class="modal-dialog" role="document">
   <div class="modal-content">
     <div class="modal-header">
@@ -532,29 +533,42 @@ Problems do occur:
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+
     <div class="modal-body">
+      <label>I read the entire decision aid.</label><br>
       
-    <label>I read the entire decision aid.</label>
-    <div class="btn-group btn-toggle"> 
+      <div class="btn-group btn-toggle"> 
+        <button class="btn btn-sm btn-default">Yes</button>
+        <button class="btn btn-sm btn-primary active">No</button>
+      </div>
 
-    <button class="btn btn-sm btn-default">Yes</button>
-    <button class="btn btn-sm btn-primary active">No</button>
-  </div>
+      <div>&nbsp;</div>
 
-  <div>&nbsp;</div>
+      <div class="form-group">
+        <label for="comment">Did this information help you feel more comfortable in making a decision about whether to get an ICD?</label>
+        <textarea class="form-control" rows="5" id="comment"></textarea>
+      </div>
 
-<div class="form-group">
-<label for="comment">Did this information help you feel more comfortable in making a decision about whether to get an ICD?</label>
-<textarea class="form-control" rows="5" id="comment"></textarea>
-</div>
+      <label>How satisfied are you with this decision aid?</label>
+
+      <div class="star-rating">
+        <span class="fa fa-star-o" data-rating="1"></span>
+        <span class="fa fa-star-o" data-rating="2"></span>
+        <span class="fa fa-star-o" data-rating="3"></span>
+        <span class="fa fa-star-o" data-rating="4"></span>
+        <span class="fa fa-star-o" data-rating="5"></span>
+        <input type="hidden" name="whatever1" class="rating-value" value="0">
+      </div>
 
     </div>
+    
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="decisionAids()">OK</button>
     </div>
   </div>
 </div>
+
 </div>
 
 <script>
@@ -578,6 +592,28 @@ $(this).find('.btn').toggleClass('btn-default');
    
 });
 
+
+var $star_rating = $('.star-rating .fa');
+
+var SetRatingStar = function() {
+  return $star_rating.each(function() {
+    if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+      return $(this).removeClass('fa-star-o').addClass('fa-star');
+    } else {
+      return $(this).removeClass('fa-star').addClass('fa-star-o');
+    }
+  });
+};
+
+$star_rating.on('click', function() {
+  $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+  return SetRatingStar();
+});
+
+SetRatingStar();
+$(document).ready(function() {
+
+});
 
 </script>
 `);
