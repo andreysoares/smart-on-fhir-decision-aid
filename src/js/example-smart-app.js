@@ -92,8 +92,6 @@ var p = defaultPatient();
 
   };
 
-
-
   function getAge(dateString) {
     var today = new Date();
     var birthDate = new Date(dateString);
@@ -212,8 +210,10 @@ var p = defaultPatient();
       var period = 'From ' + CarePlan[1].toLocaleDateString();
       if (CarePlan[2] != 'Invalid Date') {
         period = period + ' to ' + CarePlan[2].toLocaleDateString();
+        formatTable = formatTable + '<tr style="color:lightgray;"><td>' + CarePlan[0] + '</td><td>' + period + '</td><td>' + CarePlan[4].split('|').join(',<br>') + '</td></tr>';
+      } else {
+        formatTable = formatTable + '<tr><td>' + CarePlan[0] + '</td><td>' + period + '</td><td>' + CarePlan[4].split('|').join(',<br>') + '</td></tr>';
       }
-      formatTable = formatTable + '<tr><td>' + CarePlan[0] + '</td><td>' + period + '</td><td>' + CarePlan[4].split('|').join(',<br>') + '</td></tr>';
     }
     formatTable = formatTable + '</table>';
     return formatTable;
